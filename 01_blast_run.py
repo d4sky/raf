@@ -9,7 +9,7 @@ def Run_blast(db_dir, inpf, outf):
   myblast()
 
 #pdbaa_dir = "pdbaa_20230822"
-#pdbaa_dir = "pdbaa_20250307"
+#pdbaa_dir = "pdbaa_20250221"
 ##################################
 ##### !!!!!!!!!!!!!!!
 ##### Needs to be run from within PDB AA database-directory. e.i:
