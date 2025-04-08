@@ -104,11 +104,8 @@ def Parse_blast_xml(fname, searchID, headers, blTable, pdbTable, new = False):
           pdbTable['beg'].append(getattr(hsp, 'sbjct_start'))
           pdbTable['end'].append(getattr(hsp, 'sbjct_end'))
 
-
-
-
 dom_prot   = "raf"
-new_version = True
+new_version = False
 
 blastColumns = ['ID_blast_search', dom_prot, 'title', 'PDB_Chains', 'length']
 blastHeaders = ['score', 'bits', 'expect', 'identities', 'positives', 'gaps', 'align_length', 'query', 'query_start', 'query_end', 'match', 'sbjct', 'sbjct_start', 'sbjct_end']

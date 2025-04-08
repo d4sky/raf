@@ -4,8 +4,9 @@ from Bio.Blast.Applications import NcbiblastpCommandline
 sys.path.append('../')
 from _utils import *
 
-def Run_blast(db_dir, inpf, outf):
-  myblast = NcbiblastpCommandline(query=inpf, db=db_dir, evalue=0.001, outfmt=5, out=outf)
+def Run_blast(db_dir, inpf, outf, eTol=1000, max_hits=100000):
+  #myblast = NcbiblastpCommandline(query=inpf, db=db_dir, evalue=0.001, outfmt=5, out=outf)
+  myblast = NcbiblastpCommandline(query=inpf, db=db_dir, evalue=eTol, max_target_seqs=max_hits, outfmt=5, out=outf)
   myblast()
 
 #pdbaa_dir = "pdbaa_20230822"
