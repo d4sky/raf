@@ -26,7 +26,8 @@ class PdbChain():
             print("There seems to be no Chain in for PDB:" + pdbID)
             self.pdb[pdbID].append("N@")
           else:
-            self.pdb[pdbID].append(items[ii+1].strip()[0])
+            #self.pdb[pdbID].append(items[ii+1].strip()[0])
+            self.pdb[pdbID].append(items[ii+1].strip())
             
     for pdbID in self.pdb:
       if   len(self.pdb[pdbID])>0:
@@ -65,8 +66,9 @@ def Parse_blast_xml(fname, searchID, headers, blTable, pdbTable, new = False):
           print("Something is wrong")
           sys.exit()
       else:
-        pdb_chain   = PdbChain(alignment.title)
-      
+        #pdb_chain   = PdbChain(alignment.title)
+        pdb_chain   = PdbChain(alignment.hit_id)
+
       pdbC_string = pdb_chain.Report()
 
       hit_def = alignment.hit_def  # Get full description
@@ -77,6 +79,7 @@ def Parse_blast_xml(fname, searchID, headers, blTable, pdbTable, new = False):
         #pdb_ids.append(match_pdb_id)
         
       for hsp in alignment.hsps:  
+        print(hsp)
         blastTable_ID = blastTable_ID + 1
         blTable['ID_blast_search'].append(blastTable_ID)
         blTable[dom_prot].append(searchID)
@@ -101,8 +104,10 @@ def Parse_blast_xml(fname, searchID, headers, blTable, pdbTable, new = False):
           pdbTable['query'].append(getattr(hsp, 'query'))
           pdbTable['match'].append(getattr(hsp, 'match'))
           pdbTable['sbjct'].append(getattr(hsp, 'sbjct'))
-          pdbTable['beg'].append(getattr(hsp, 'sbjct_start'))
-          pdbTable['end'].append(getattr(hsp, 'sbjct_end'))
+          #pdbTable['beg'].append(getattr(hsp, 'sbjct_start'))
+          #pdbTable['end'].append(getattr(hsp, 'sbjct_end'))
+          pdbTable['beg'].append(getattr(hsp, 'query_start'))
+          pdbTable['end'].append(getattr(hsp, 'query_end'))
 
 dom_prot   = "raf"
 new_version = False
@@ -122,8 +127,8 @@ for i, xml_file in enumerate(zoznam):
   prefix = xml_file.split('/')[-1].replace(".xml", "")
   Parse_blast_xml(xml_file, prefix, blastHeaders, blastTable, pdbchTable, new_version)
   print()
-
 print("Finished Parsing")
+#sys.exit()
 
 df_blast = pd.DataFrame(blastTable)
 df_blast.to_excel('./' + f'{dom_prot}_searches.xlsx')

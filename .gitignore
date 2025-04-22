@@ -1,0 +1,17 @@
+__pycache__/
+
+archive/
+blast_20250307/
+from_Tohidy/
+pdb_blast/
+pdbaa_20250207/
+pdbaa_20250307/
+pdbs/
+shorts_search/
+
+# Ignore all .xlsx files
+*.xlsx
+
+matches.*
+
+*.txt

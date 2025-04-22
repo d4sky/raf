@@ -1,34 +1,35 @@
+import sys 
+
 from _utils import *
 
-def Process_outputs(table, threshold=0.0):
-  for index, row in table.iterrows():
-    score = row['score']
-    if score > threshold:
-      #print(row)
-      query = row['query']
-      match = row['match']
-      sbjct = row['sbjct']
-      beg   = row['beg']
-      end   = row['end']
-      mr = MatchRecord(score, query, match, sbjct, beg, end)
-      #print(mr)
-      pMatches.Add_item(row['PDB'], row['chains'], mr)
+#sys.path.append('C:/Python/')
+#from nutils import PandasDF
 
-pMatches = Matches()
+def Add_matches(rowsDF):
+  print(rowsDF)
+  for index, row in rowsDF.iterrows():
+    pdbID = row["PDB"]
+    chain = row["chains"]
+    score = row["score"]
+    pMatches.Add_item(pdbID, chain, {"score": score})
+
+pMatches = Matches("PdbID", "Chain")
 
 Table1 = PandasDF("raf_matches.xlsx")
-Process_outputs(Table1, 20.0)
+matches1 = Table1.Select_rows(['PDB', 'chains', 'score', 'query', 'match', 'sbjct', 'beg', 'end'], {'score': ('>', 100.0)})
+Add_matches(matches1)
 
 Table2 = PandasDF("raf_shorts.xlsx")
-Process_outputs(Table2, 0.0)
+matches2 = Table2.Select_rows()
+Add_matches(matches2)
 
-#print(pMatches.Line_formated(col_spaces={"key1": 10, "key2": 5, "item": 20}))
-'''
-print(pMatches.Formated(
-    record_fields=["score", "query", "sbjct", "beg", "end"],
-    col_spaces={"PdbID": 6, "Chain": 4, "score": 6, "beg": 5, "end": 5}
-))
-'''
+got_pdbs = pMatches.Get_values(['score'])
+
+unitedTable = PandasDF("raf_united.xlsx")
+unitedTable.Add_columns(["PdbID", "Chain", "score"])
+unitedTable.Append_rows(got_pdbs[1:])
+unitedTable.Save()
+
 pdb_out_dir = "pdbs/"
 Check_and_create_dir(pdb_out_dir)
 
@@ -37,5 +38,5 @@ cif_url = 'https://files.wwpdb.org/pub/pdb/data/structures/divided/mmCIF'
 
 for uniquePDB in pMatches:
   print(uniquePDB)
-  Download_pdb_entry(uniquePDB, pdb_out_dir, pdb_url, cif_url)
-  break
+  if Download_pdb_entry(uniquePDB, pdb_out_dir, pdb_url, cif_url) != 'downloaded':
+    break
